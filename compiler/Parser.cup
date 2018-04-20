@@ -1,0 +1,357 @@
+// Created for COE 1622 project3
+// author: Tyler Mohnke
+
+package compiler;
+
+import java_cup.runtime.*;
+import compiler.syntaxtree.*;
+
+parser code
+{:
+    public boolean errorOccured;
+    
+    @Override
+    public void syntax_error(Symbol cur_token)
+    {
+        errorOccured = true;
+        System.out.println("Parse error at line " + cur_token.left + ", column " + cur_token.right);
+    }
+:}
+
+// Terminals
+terminal BOOLEAN;
+terminal CLASS;
+terminal ELSE;
+terminal EXTENDS;
+terminal FALSE;
+terminal IF;
+terminal INT;
+terminal LENGTH;
+terminal MAIN;
+terminal NEW;
+terminal PRINTLN;
+terminal PUBLIC;
+terminal RETURN;
+terminal STATIC;
+terminal STRING;
+terminal THIS;
+terminal TRUE;
+terminal VOID;
+terminal WHILE;
+
+terminal AND;
+terminal ASSIGNMENT;
+terminal LESSTHAN;
+terminal MINUS;
+terminal MULT;
+terminal NOT;
+terminal PLUS;
+
+terminal COMMA;
+terminal DOT;
+terminal SEMICOLON;
+terminal LBRACE;
+terminal RBRACE;
+terminal LBRACKET;
+terminal RBRACKET;
+terminal LPAREN;
+terminal RPAREN;
+
+terminal Identifier ID;
+terminal Integer INTEGER;
+
+
+// non terminals
+non terminal Program PROGRAM;
+non terminal MainClass MAIN_CLASS;
+non terminal ClassDeclList CLASS_DECL_LIST;
+non terminal Statement STATEMENT;
+non terminal ClassDecl CLASS_DECL;
+non terminal StatementList STATEMENT_LIST;
+non terminal Exp EXPRESSION;
+non terminal VarDeclList VAR_DECL_LIST;
+non terminal MethodDeclList METHOD_DECL_LIST;
+non terminal ExpList EXPRESSION_LIST;
+non terminal VarDecl VAR_DECL;
+non terminal Type TYPE;
+non terminal MethodDecl METHOD_DECL;
+non terminal FormalList FORMAL_LIST;
+non terminal Formal FORMAL;
+
+
+// Precedences
+precedence left AND;
+precedence left LESSTHAN;
+precedence left MINUS, PLUS;
+precedence left MULT;
+precedence left NOT;
+
+
+start with PROGRAM;
+
+
+PROGRAM ::= MAIN_CLASS:main CLASS_DECL_LIST:class_list
+    {:
+        RESULT = new Program(main, class_list);
+    :}
+    ;
+
+MAIN_CLASS ::= CLASS ID:class_name LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET ID:args_name RPAREN LBRACE STATEMENT:statement RBRACE RBRACE
+    {:
+        RESULT = new MainClass(class_name, args_name, statement);
+    :}
+    ;
+    
+CLASS_DECL_LIST ::= CLASS_DECL_LIST:class_list CLASS_DECL:class_decl
+    {:
+        class_list.addElement(class_decl);
+        RESULT = class_list;
+    :}
+    | // Epsilon
+    {:
+        RESULT = new ClassDeclList();
+    :}
+    ;
+    
+STATEMENT ::= LBRACE STATEMENT_LIST:statement_list RBRACE
+    {:
+        RESULT = new Block(statement_list, statement_listleft, statement_listright);
+    :}
+    | IF LPAREN EXPRESSION:expression RPAREN STATEMENT:if_true ELSE STATEMENT:if_false
+    {:
+        RESULT = new If(expression, if_true, if_false, expressionleft, expressionright);
+    :}
+    | WHILE LPAREN EXPRESSION:expression RPAREN STATEMENT:statement
+    {:
+        RESULT = new While(expression, statement, expressionleft, expressionright);
+    :}
+    | PRINTLN LPAREN EXPRESSION:expression RPAREN SEMICOLON
+    {:
+        RESULT = new Print(expression, expressionleft, expressionright);
+    :}
+    | ID:var_name ASSIGNMENT EXPRESSION:expression SEMICOLON
+    {:
+        RESULT = new Assign(var_name, expression, var_nameleft, var_nameright);
+    :}
+    | ID:var_name LBRACKET EXPRESSION:index RBRACKET ASSIGNMENT EXPRESSION:expression SEMICOLON
+    {:
+        RESULT = new ArrayAssign(var_name, index, expression, var_nameleft, var_nameright);
+    :}
+    | error SEMICOLON
+    {:
+        // error
+    :}
+    ;
+    
+CLASS_DECL ::= CLASS ID:class_name LBRACE VAR_DECL_LIST:var_list METHOD_DECL_LIST:method_list RBRACE
+    {:
+        RESULT = new ClassDeclSimple(class_name, var_list, method_list, class_nameleft, class_nameright);
+    :}
+    | CLASS ID:class_name EXTENDS ID:extend_name LBRACE VAR_DECL_LIST:var_list METHOD_DECL_LIST:method_list RBRACE
+    {:
+        RESULT = new ClassDeclExtends(class_name, extend_name, var_list, method_list, class_nameleft, class_nameright);
+    :}
+    | error RBRACE
+    {:
+    
+    :}
+    ;
+ 
+// Right recursive to avoid a shift reduce conflict
+STATEMENT_LIST ::= STATEMENT:statement STATEMENT_LIST:statement_list
+    {:
+        StatementList newStatementList = new StatementList();
+        newStatementList.addElement(statement);
+        for(int index = 0; index < statement_list.size(); ++index)
+        {
+            newStatementList.addElement(statement_list.elementAt(index));
+        }
+        RESULT = newStatementList;
+    :}
+    | // Epsilon
+    {:
+        RESULT = new StatementList();
+    :}
+    ;
+ 
+EXPRESSION ::= EXPRESSION:exp1 AND EXPRESSION:exp2
+    {:
+        RESULT = new And(exp1, exp2, exp1left, exp1right);
+    :}
+    | EXPRESSION:exp1 LESSTHAN EXPRESSION:exp2
+    {:
+        RESULT = new LessThan(exp1, exp2, exp1left, exp1right);
+    :}
+    | EXPRESSION:exp1 PLUS EXPRESSION:exp2
+    {:
+        RESULT = new Plus(exp1, exp2, exp1left, exp1right);
+    :}
+    | EXPRESSION:exp1 MINUS EXPRESSION:exp2
+    {:
+        RESULT = new Minus(exp1, exp2, exp1left, exp1right);
+    :}
+    | EXPRESSION:exp1 MULT EXPRESSION:exp2
+    {:
+        RESULT = new Times(exp1, exp2, exp1left, exp1right);
+    :}
+    | EXPRESSION:array LBRACKET EXPRESSION:index RBRACKET
+    {:
+        RESULT = new ArrayLookup(array, index, arrayleft, arrayright);
+    :}
+    | EXPRESSION:array DOT LENGTH
+    {:
+        RESULT = new ArrayLength(array, arrayleft, arrayright);
+    :}
+    | EXPRESSION:var_name DOT ID:function_name LPAREN EXPRESSION_LIST:params RPAREN
+    {:
+        RESULT = new Call(var_name, function_name, params, var_nameleft, var_nameright);
+    :}
+    |
+    EXPRESSION:var_name DOT ID:function_name LPAREN RPAREN
+    {:
+        RESULT = new Call(var_name, function_name, new ExpList(), var_nameleft, var_nameright);
+    :}
+    |
+    EXPRESSION:var_name DOT error RPAREN
+    {:
+        // error
+    :}
+    | INTEGER:integer
+    {:
+        RESULT = new IntegerLiteral(integer, integerleft, integerright);
+    :}
+    | TRUE:t
+    {:
+        RESULT = new True(tleft, tright);
+    :}
+    | FALSE:f
+    {:
+        RESULT = new False(fleft, fright);
+    :}
+    | ID:id
+    {:
+        RESULT = new IdentifierExp(id.s, idleft, idright);
+    :}
+    | THIS:t
+    {:
+        RESULT = new This(tleft, tright);
+    :}
+    | NEW INT LBRACKET EXPRESSION:expression RBRACKET
+    {:
+        RESULT = new NewArray(expression, expressionleft, expressionright);
+    :}
+    | NEW ID:class_name LPAREN RPAREN
+    {:
+        RESULT = new NewObject(class_name, class_nameleft, class_nameright);
+    :}
+    | NOT EXPRESSION:expression
+    {:
+        RESULT = new Not(expression, expressionleft, expressionright);
+    :}
+    | LPAREN EXPRESSION:expression RPAREN
+    {:
+        RESULT = expression;
+    :}
+    ;
+    
+VAR_DECL_LIST ::= VAR_DECL_LIST:var_list VAR_DECL:var
+    {:
+        var_list.addElement(var);
+        RESULT = var_list;
+    :}
+    | // Epsilon
+    {:
+        RESULT = new VarDeclList();
+    :}
+    ;
+    
+METHOD_DECL_LIST ::= METHOD_DECL_LIST:method_list METHOD_DECL:method
+    {:
+        method_list.addElement(method);
+        RESULT = method_list;
+    :}
+    | // Epsilon
+    {:
+        RESULT = new MethodDeclList();
+    :}
+    ;
+    
+EXPRESSION_LIST ::= EXPRESSION:expression
+    {:
+        ExpList expList = new ExpList();
+        expList.addElement(expression);
+        RESULT = expList;
+    :}
+    | EXPRESSION_LIST:expression_list COMMA EXPRESSION:expression
+    {:
+        expression_list.addElement(expression);
+        RESULT = expression_list;
+    :}
+    ;
+    
+VAR_DECL ::= TYPE:type ID:id SEMICOLON
+    {:
+        RESULT = new VarDecl(type, id, typeleft, typeright);
+    :}
+    | TYPE error SEMICOLON
+    {:
+       
+    :}
+    ;
+    
+TYPE ::= INT:i LBRACKET RBRACKET
+    {:
+        RESULT = new IntArrayType(ileft, iright);
+    :}
+    | BOOLEAN:b
+    {:
+        RESULT = new BooleanType(bleft, bright);
+    :}
+    | INT:i
+    {:
+        RESULT = new IntegerType(ileft, iright);
+    :}
+    | ID:id
+    {:
+        RESULT = new IdentifierType(id.s, idleft, idright);
+    :}
+    ;
+    
+METHOD_DECL ::= PUBLIC TYPE:type ID:function_name LPAREN FORMAL_LIST:formal_list RPAREN LBRACE VAR_DECL_LIST:var_list STATEMENT_LIST:statement_list RETURN EXPRESSION:expression SEMICOLON RBRACE
+    {:
+        RESULT = new MethodDecl(type, function_name, formal_list, var_list, statement_list, expression, function_nameleft, function_nameright);
+    :}
+    | PUBLIC TYPE:type ID:function_name LPAREN RPAREN LBRACE VAR_DECL_LIST:var_list STATEMENT_LIST:statement_list RETURN EXPRESSION:expression SEMICOLON RBRACE
+    {:
+        RESULT = new MethodDecl(type, function_name, new FormalList(), var_list, statement_list, expression, function_nameleft, function_nameright);
+    :}
+    | error RPAREN
+    {:
+    
+    :}
+    | error RBRACE
+    {:
+    
+    :}
+    ;
+    
+FORMAL_LIST ::= FORMAL:formal
+    {:
+        FormalList formalList = new FormalList();
+        formalList.addElement(formal);
+        RESULT = formalList;
+    :}
+    | FORMAL_LIST:formal_list COMMA FORMAL:formal
+    {:
+        formal_list.addElement(formal);
+        RESULT = formal_list;
+    :}
+    ;
+    
+FORMAL ::= TYPE:type ID:id
+    {:
+        RESULT = new Formal(type, id, typeleft, typeright);
+    :}
+    ;
+    
+    

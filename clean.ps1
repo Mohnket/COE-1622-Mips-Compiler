@@ -1,0 +1,1 @@
+Get-ChildItem -Path . -Include *.class -Recurse | foreach { $_.Delete()}
