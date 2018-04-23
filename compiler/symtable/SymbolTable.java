@@ -66,7 +66,7 @@ public class SymbolTable
         
         for(int index = scope.length - 2; index >= 0; --index)
         {
-            String name = scope[index] + "__" + scope[scope.length - 1];
+            String name = scope[index] + "::" + scope[scope.length - 1];
             if(m_SymbolTable.get(name) != null)
             {
                 return name;
@@ -92,7 +92,7 @@ public class SymbolTable
         StringBuilder builder = new StringBuilder();
         for(int index = start; index < end - 1; ++index)
         {
-            builder.append(tokens[index]).append("__");
+            builder.append(tokens[index]).append("::");
         }
         builder.append(tokens[end - 1]);
         

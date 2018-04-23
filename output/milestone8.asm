@@ -30,6 +30,34 @@ main:
     J _system_exit
 
 
+Test2__test:
+    SUB $sp, $sp, 4
+    SW $ra, 0($sp)
+
+_label_3:
+    ADDI $8, $zero, 0
+    
+    SLT $8, $8, $5
+    BEQZ $8, _label_5
+
+_label_4:
+    
+    ADD $a0, $zero, $5
+    JAL _system_out_println
+    
+    ADDI $8, $zero, 1
+    SUB $8, $5, $8
+    ADD $5, $8, $zero
+    J _label_3
+
+_label_5:
+    ADDI $2, $zero, 100
+    ADD $v0, $2, $zero
+    LW $ra, 0($sp)
+    ADD $sp, $sp, 4
+    JR $ra
+
+
 Test2__factorial:
     SUB $sp, $sp, 12
     SW $16, 0($sp)
@@ -99,34 +127,6 @@ _label_2:
     LW $17, 4($sp)
     LW $ra, 8($sp)
     ADD $sp, $sp, 12
-    JR $ra
-
-
-Test2__test:
-    SUB $sp, $sp, 4
-    SW $ra, 0($sp)
-
-_label_3:
-    ADDI $8, $zero, 0
-    
-    SLT $8, $8, $5
-    BEQZ $8, _label_5
-
-_label_4:
-    
-    ADD $a0, $zero, $5
-    JAL _system_out_println
-    
-    ADDI $8, $zero, 1
-    SUB $8, $5, $8
-    ADD $5, $8, $zero
-    J _label_3
-
-_label_5:
-    ADDI $2, $zero, 100
-    ADD $v0, $2, $zero
-    LW $ra, 0($sp)
-    ADD $sp, $sp, 4
     JR $ra
 
 

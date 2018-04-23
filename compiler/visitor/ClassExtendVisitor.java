@@ -41,7 +41,7 @@ public class ClassExtendVisitor implements Visitor {
             for(int index = 0; index < baseClass.vl.size(); ++index)
             {
                 VarDecl baseVar = baseClass.vl.elementAt(index);
-                String[] superScope = baseVar.i.s.split("__");
+                String[] superScope = baseVar.i.s.split("::");
                 m_Scope.add(superScope[superScope.length - 1]);
                 boolean success = m_SymbolTable.put(m_Scope.toArray(new String[0]), baseVar);
                 if(success == false)
@@ -56,7 +56,7 @@ public class ClassExtendVisitor implements Visitor {
             for(int index = 0; index < baseClass.ml.size(); ++index)
             {
                 MethodDecl baseMethod = baseClass.ml.elementAt(index);
-                String[] superScope = baseMethod.i.s.split("__");
+                String[] superScope = baseMethod.i.s.split("::");
                 m_Scope.add(superScope[superScope.length - 1]);
                 boolean overriden = m_SymbolTable.contains(m_Scope.toArray(new String[0]));
                 if(overriden == false)
@@ -83,7 +83,7 @@ public class ClassExtendVisitor implements Visitor {
             for(int index = 0; index < baseClass.vl.size(); ++index)
             {
                 VarDecl baseVar = baseClass.vl.elementAt(index);
-                String[] superScope = baseVar.i.s.split("__");
+                String[] superScope = baseVar.i.s.split("::");
                 m_Scope.add(superScope[superScope.length - 1]);
                 boolean success = m_SymbolTable.put(m_Scope.toArray(new String[0]), baseVar);
                 if(success == false)
@@ -97,7 +97,7 @@ public class ClassExtendVisitor implements Visitor {
             for(int index = 0; index < baseClass.ml.size(); ++index)
             {
                 MethodDecl baseMethod = baseClass.ml.elementAt(index);
-                String[] superScope = baseMethod.i.s.split("__");
+                String[] superScope = baseMethod.i.s.split("::");
                 m_Scope.add(superScope[superScope.length - 1]);
                 boolean overriden = m_SymbolTable.contains(m_Scope.toArray(new String[0]));
                 if(overriden == false)

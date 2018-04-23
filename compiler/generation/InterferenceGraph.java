@@ -151,7 +151,7 @@ public class InterferenceGraph
             if(m_Colors.get(returnValue) == null)
             {
                 // if the return value is in memory (doesn't interfere) leave it out of the graph
-                if(returnValue.split("__").length != 2)
+                if(returnValue.split("::").length != 2)
                 {
                     m_Colors.put(returnValue, RETURN);
                     m_Graph.put(functionName, new ArrayList<String>());

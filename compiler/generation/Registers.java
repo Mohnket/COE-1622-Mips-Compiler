@@ -166,11 +166,11 @@ public class Registers
             // call & new do not "use" their arguments, every other quad does
             if(((currentQuad instanceof IrCall) == false) && ((currentQuad instanceof New) == false))
             {
-                if((currentQuad.m_Arg1 != null) && (f_IsDigit.matcher(currentQuad.m_Arg1).matches() == false) && (currentQuad.m_Arg1.split("__").length != 2))
+                if((currentQuad.m_Arg1 != null) && (f_IsDigit.matcher(currentQuad.m_Arg1).matches() == false) && (currentQuad.m_Arg1.split("::").length != 2))
                 {
                     uses.add(currentQuad.m_Arg1);
                 }
-                if((currentQuad.m_Arg2 != null) && (f_IsDigit.matcher(currentQuad.m_Arg2).matches() == false) && (currentQuad.m_Arg2.split("__").length != 2))
+                if((currentQuad.m_Arg2 != null) && (f_IsDigit.matcher(currentQuad.m_Arg2).matches() == false) && (currentQuad.m_Arg2.split("::").length != 2))
                 {
                     uses.add(currentQuad.m_Arg2);
                 }
@@ -180,7 +180,7 @@ public class Registers
             // jumps do not define their results
             if(((currentQuad instanceof ConditionalJump) == false) && ((currentQuad instanceof UnconditionalJump) == false))
             {
-                if((currentQuad.m_Result != null) && (currentQuad.m_Result.split("__").length != 2))
+                if((currentQuad.m_Result != null) && (currentQuad.m_Result.split("::").length != 2))
                 {
                     def.add(currentQuad.m_Result);
                 }

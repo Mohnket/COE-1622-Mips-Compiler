@@ -87,7 +87,7 @@ public class Generation implements IrVisitor
         m_CurrentFunction = name;
         
         // do the block for the function entrance first with stack allocation
-        builder.append(name).append(":\n");
+        builder.append(name.replace("::", "__")).append(":\n");
         if(name.equals("main") == false)
         {
             builder.append(storeRegisters());
@@ -187,7 +187,7 @@ public class Generation implements IrVisitor
             {
                 spillFrom = from;
                 from = "$t8";
-                if(copy.m_Arg1.split("__").length != 2)
+                if(copy.m_Arg1.split("::").length != 2)
                 {
                     builder.append("LW $t8, ").append(spillFrom).append("($sp)\n    ");
                 }
@@ -207,7 +207,7 @@ public class Generation implements IrVisitor
         
         if(spillTo != null)
         {
-            if(copy.m_Result.split("__").length != 2)
+            if(copy.m_Result.split("::").length != 2)
             {
                 builder.append("\n    SW $t8, ").append(spillTo).append("($sp)");
             }
@@ -239,7 +239,7 @@ public class Generation implements IrVisitor
             {
                 spillPrint = print;
                 print = "$t8";
-                if(irPrint.m_Arg1.split("__").length != 2)
+                if(irPrint.m_Arg1.split("::").length != 2)
                 {
                     builder.append("LW $t8, ").append(spillPrint).append("($sp)\n    ");
                 }
@@ -311,7 +311,7 @@ public class Generation implements IrVisitor
             {
                 spillLeft = left;
                 left = "$t8";
-                if(binOp.m_Arg1.split("__").length != 2)
+                if(binOp.m_Arg1.split("::").length != 2)
                 {
                     builder.append("LW $t8, ").append(spillLeft).append("($sp)\n    ");
                 }
@@ -324,7 +324,7 @@ public class Generation implements IrVisitor
             {
                 spillRight = right;
                 right = "$t9";
-                if(binOp.m_Arg2.split("__").length != 2)
+                if(binOp.m_Arg2.split("::").length != 2)
                 {
                     builder.append("LW $t9, ").append(spillRight).append("($sp)\n    ");
                 }
@@ -339,7 +339,7 @@ public class Generation implements IrVisitor
         
         if(spillDest != null)
         {
-            if(binOp.m_Result.split("__").length != 2)
+            if(binOp.m_Result.split("::").length != 2)
             {
                 builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
             }
@@ -368,7 +368,7 @@ public class Generation implements IrVisitor
         
         if(dest.charAt(0) != '$')
         {
-            if(newObject.m_Result.split("__").length != 2)
+            if(newObject.m_Result.split("::").length != 2)
             {
                 builder.append("    SW $v0, ").append(dest).append("($sp)\n");
             }
@@ -417,12 +417,12 @@ public class Generation implements IrVisitor
         }
         
         builder.append(saveAcrossCall());
-        builder.append("    JAL ").append(call.m_Arg1).append("\n");
+        builder.append("    JAL ").append(call.m_Arg1.replace("::", "__")).append("\n");
         builder.append("    ADD ").append(destination).append(", $v0, $zero\n");
         builder.append(restoreAcrossCall());
         if(spillDest != null)
         {
-            if(call.m_Result.split("__").length != 2)
+            if(call.m_Result.split("::").length != 2)
             {
                 builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
             }
@@ -452,7 +452,7 @@ public class Generation implements IrVisitor
             {
                 spillValue = value;
                 value = "$t8";
-                if(returnIr.m_Arg1.split("__").length != 2)
+                if(returnIr.m_Arg1.split("::").length != 2)
                 {
                     builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
                 }
@@ -490,7 +490,7 @@ public class Generation implements IrVisitor
         {
             spillValue = value;
             value = "$t8";
-            if(op.m_Arg1.split("__").length != 2)
+            if(op.m_Arg1.split("::").length != 2)
             {
                 builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
             }
@@ -504,7 +504,7 @@ public class Generation implements IrVisitor
         
         if(spillDest != null)
         {
-            if(op.m_Result.split("__").length != 2)
+            if(op.m_Result.split("::").length != 2)
             {
                 builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
             }
@@ -537,7 +537,7 @@ public class Generation implements IrVisitor
         {
             spillValue = value;
             value = "$t8";
-            if(jump.m_Arg1.split("__").length != 2)
+            if(jump.m_Arg1.split("::").length != 2)
             {
                 builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
             }
@@ -610,7 +610,7 @@ public class Generation implements IrVisitor
                 {
                     spillRegister = register;
                     register = "$t8";
-                    if(parameter.split("__").length != 2)
+                    if(parameter.split("::").length != 2)
                     {
                         builder.append("    LW $t8, ").append((Integer.decode(spillRegister) + additionalOffset)).append("($sp)\n");
                     }

@@ -42,7 +42,7 @@ public class NameAnalysisVisitor implements Visitor
     {
         // Main class special class
         m_SymbolTable.put(n.i1.s, (ProgramSymbol)(new ClassDeclSimple(n.i1, null, null, 0, 0)));
-        String argument = n.i1.s + "__" + n.i2.s;
+        String argument = n.i1.s + "::" + n.i2.s;
         m_SymbolTable.put(argument, new Formal(new IntegerType(0,0), n.i2, 0, 0));
         
         n.i1.accept(this);
