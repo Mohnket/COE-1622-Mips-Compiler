@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class UnconditionalJump extends Quadruple
 {
@@ -14,8 +14,8 @@ public class UnconditionalJump extends Quadruple
         return "goto " + m_Result;
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class Return extends Quadruple
 {
@@ -11,11 +11,11 @@ public class Return extends Quadruple
     
     public String toString()
     {
-        return "return " + m_Result;
+        return "return " + m_Arg1;
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

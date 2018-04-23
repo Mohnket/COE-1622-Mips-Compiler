@@ -8,7 +8,7 @@ import compiler.visitor.TypeCheckVisitor;
 import compiler.visitor.IrVisitor;
 import compiler.visitor.ClassExtendVisitor;
 import compiler.symtable.SymbolTable;
-import compiler.generation.Generation;
+import compiler.generation.*;
 
 public class Main
 {
@@ -54,9 +54,10 @@ public class Main
         IrVisitor irVisitor = new IrVisitor(symbolTable);
         irVisitor.visit(program);
         
-        System.err.println(irVisitor.m_IR.toString());
+        // System.err.println(irVisitor.m_IR.toString());
         
         Generation mipsGenerator = new Generation(irVisitor.m_IR, symbolTable);
+        // mipsGenerator.generate();
         System.out.println(mipsGenerator.generate());
     }
 }

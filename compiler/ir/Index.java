@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class Index extends Quadruple
 {
@@ -27,8 +27,8 @@ public class Index extends Quadruple
         }
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

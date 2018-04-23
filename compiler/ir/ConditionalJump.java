@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class ConditionalJump extends Quadruple
 {
@@ -14,8 +14,8 @@ public class ConditionalJump extends Quadruple
         return "iffalse " + m_Arg1 + " goto " + m_Result;
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

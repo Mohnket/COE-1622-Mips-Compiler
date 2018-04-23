@@ -8,11 +8,13 @@ public class SymbolTable
 {
     private HashMap<String, ProgramSymbol> m_SymbolTable;
     private HashMap<String, String> m_Derivations;
+    private HashMap<String, Integer> m_MemberIndex;
     
     public SymbolTable()
     {
         m_SymbolTable = new HashMap<String, ProgramSymbol>();
         m_Derivations = new HashMap<String, String>();
+        m_MemberIndex = new HashMap<String, Integer>();
     }
     
     public boolean put(String fullyQualifiedName, ProgramSymbol node)
@@ -104,5 +106,15 @@ public class SymbolTable
         {
             System.out.println(o);
         }
+    }
+    
+    public void addMemberIndex(String varName, int index)
+    {
+        m_MemberIndex.put(varName, index);
+    }
+    
+    public Integer getMemberIndex(String varName)
+    {
+        return m_MemberIndex.get(varName);
     }
 }

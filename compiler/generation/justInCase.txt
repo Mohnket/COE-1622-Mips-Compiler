@@ -1,0 +1,69 @@
+    public String visit(BinaryOp quad)
+    {
+        return "";
+    }
+    
+    public String visit(ConditionalJump quad)
+    {
+        return "";
+    }
+    
+    public String visit(Copy quad)
+    {
+        return "";
+    }
+    
+    public String visit(Index quad)
+    {
+        return "";
+    }
+    
+    public String visit(IrCall quad)
+    {
+        return "";
+    }
+    
+    public String visit(IrNewArray quad)
+    {
+        return "";
+    }
+    
+    public String visit(IrPrint quad)
+    {
+        return "";
+    }
+    
+    public String visit(Length quad)
+    {
+        return "";
+    }
+    
+    public String visit(New quad)
+    {
+        return "";
+    }
+    
+    public String visit(Param quad)
+    {
+        return "";
+    }
+    
+    public String visit(Quadruple quad)
+    {
+        return "";
+    }
+    
+    public String visit(Return quad)
+    {
+        return "";
+    }
+    
+    public String visit(UnaryOp quad)
+    {
+        return "";
+    }
+    
+    public String visit(UnconditionalJump quad)
+    {
+        return "";
+    }

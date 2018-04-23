@@ -394,9 +394,10 @@ public class TypeCheckVisitor implements TypeVisitor
                 System.out.println(String.format("Attempt to call a non-method at line %d, character %d", n.m_Row, n.m_Column));
                 return null;
             }
-            n.i.s = functionName;
             
             MethodDecl function = (MethodDecl)m_SymbolTable.get(functionName);
+            n.i.s = function.i.s;
+            
             // System.out.println(functionName);
             // System.out.println(function.t);
             if(function.fl.size() != n.el.size())

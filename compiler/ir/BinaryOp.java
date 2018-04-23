@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class BinaryOp extends Quadruple
 {
@@ -36,8 +36,8 @@ public class BinaryOp extends Quadruple
         }
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

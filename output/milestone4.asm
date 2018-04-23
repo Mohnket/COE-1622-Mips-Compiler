@@ -1,85 +1,71 @@
 .text
 main:
-    ADDI $8, $zero, 0
-    ADD $9, $zero, $zero
-    ADD $4, $9, $zero
-    ADD $5, $8, $zero
+    ADDI $10, $zero, 0
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $a0, 4($sp)
+    ADDI $a0, $zero, 0
+    JAL _new_object
+    ADD $11, $v0, $zero
+    LW $v0, 0($sp)
+    LW $a0, 4($sp)
+    ADD $sp, $sp, 8
+    
+    
+    SUB $sp, $sp, 12
+    SW $v0, 0($sp)
+    SW $5, 4($sp)
+    SW $4, 8($sp)
+    ADD $4, $zero, $11
+    ADD $5, $zero, $10
     JAL Test2__Start
-    ADD $10, $v0, $zero
-    ADD $a0, $zero, $10
+    ADD $16, $v0, $zero
+    LW $v0, 0($sp)
+    LW $5, 4($sp)
+    LW $4, 8($sp)
+    ADDI $sp, $sp, 12
+
+    ADD $a0, $zero, $16
     JAL _system_out_println
     J _system_exit
 
 
 Test2__Start:
-    SUB $sp, $sp, 76
-    SW $8, 0($sp)
-    SW $9, 4($sp)
-    SW $10, 8($sp)
-    SW $11, 12($sp)
-    SW $12, 16($sp)
-    SW $13, 20($sp)
-    SW $14, 24($sp)
-    SW $15, 28($sp)
-    SW $16, 32($sp)
-    SW $17, 36($sp)
-    SW $18, 40($sp)
-    SW $19, 44($sp)
-    SW $20, 48($sp)
-    SW $21, 52($sp)
-    SW $22, 56($sp)
-    SW $23, 60($sp)
-    SW $24, 64($sp)
-    SW $25, 68($sp)
-    SW $ra, 72($sp)
-    ADD $8, $5, $zero
-    ADDI $9, $zero, 1
-    ADD $10, $9, $zero
-    ADD $10, $10, $zero
-    NOR $11, $10, $10
-    ADD $10, $11, $zero
-    ADDI $12, $zero, 5
-    ADD $13, $12, $zero
-    ADD $13, $13, $zero
-    ADD $13, $13, $zero
-    MUL $14, $13, $13
-    ADD $13, $14, $zero
-    ADDI $15, $zero, 12
-    ADD $16, $15, $zero
-    ADD $16, $16, $zero
-    ADD $13, $13, $zero
-    SUB $17, $16, $13
-    ADD $16, $17, $zero
-    ADD $8, $8, $zero
-    ADDI $18, $zero, 1
-    ADD $19, $8, $18
-    ADD $8, $19, $zero
-    ADD $8, $8, $zero
-    ADD $13, $13, $zero
-    ADD $20, $8, $13
-    ADD $16, $16, $zero
-    ADD $21, $20, $16
-    ADD $v0, $21, $zero
-    LW $8, 0($sp)
-    LW $9, 4($sp)
-    LW $10, 8($sp)
-    LW $11, 12($sp)
-    LW $12, 16($sp)
-    LW $13, 20($sp)
-    LW $14, 24($sp)
-    LW $15, 28($sp)
-    LW $16, 32($sp)
-    LW $17, 36($sp)
-    LW $18, 40($sp)
-    LW $19, 44($sp)
-    LW $20, 48($sp)
-    LW $21, 52($sp)
-    LW $22, 56($sp)
-    LW $23, 60($sp)
-    LW $24, 64($sp)
-    LW $25, 68($sp)
-    LW $ra, 72($sp)
-    ADD $sp, $sp, 76
+    SUB $sp, $sp, 4
+    SW $ra, 0($sp)
+    ADDI $8, $zero, 1
+    
+    
+    XORI $8, $8, 1
+    
+    ADDI $8, $zero, 5
+    ADD $10, $8, $zero
+    
+    
+    MUL $8, $10, $10
+    ADD $10, $8, $zero
+    ADDI $8, $zero, 12
+    ADD $9, $8, $zero
+    
+    
+    SUB $8, $9, $10
+    ADD $9, $8, $zero
+    
+    ADDI $8, $zero, 1
+    ADD $8, $5, $8
+    ADD $5, $8, $zero
+    
+    ADDI $8, $zero, 4
+    SUB $8, $5, $8
+    ADD $5, $8, $zero
+    
+    
+    ADD $8, $5, $10
+    
+    ADD $2, $8, $9
+    ADD $v0, $2, $zero
+    LW $ra, 0($sp)
+    ADD $sp, $sp, 4
     JR $ra
 
 

@@ -110,7 +110,7 @@ public class IrVisitor implements Visitor {
                 n.sl.elementAt(i).accept(this);
         }
         n.e.accept(this);
-        m_CurrentBlock.addQuad(new Return(null, null, lastResult()));
+        m_CurrentBlock.addQuad(new Return(lastResult(), null, null));
         
         m_IR.addFunction(n.i.s, m_ControlGraph);
         m_ControlGraph = new HashMap<String, BasicBlock>();
@@ -288,11 +288,11 @@ public class IrVisitor implements Visitor {
         for ( int i = 0; i < n.el.size(); i++ )
         {
             n.el.elementAt(i).accept(this);
-            paramerters[i + 1] = new Param(null, null, lastResult());
+            paramerters[i + 1] = new Param(lastResult(), null, null);
         }
         
         n.e.accept(this);
-        paramerters[0] = new Param(null, null, lastResult());
+        paramerters[0] = new Param(lastResult(), null, null);
         
         for(int index = 0; index < paramerters.length; ++index)
         {

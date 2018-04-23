@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class IrNewArray extends Quadruple
 {
@@ -14,8 +14,8 @@ public class IrNewArray extends Quadruple
         return m_Result + " := new int, " + m_Arg1;
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

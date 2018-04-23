@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public abstract class Quadruple
 {
@@ -15,5 +15,5 @@ public abstract class Quadruple
         m_Result = result;
     }
 
-    public abstract String accept(Generation gen);
+    public abstract String accept(IrVisitor visitor);
 }

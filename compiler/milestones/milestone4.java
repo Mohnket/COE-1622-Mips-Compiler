@@ -23,7 +23,7 @@ class Test2 {
         z = 12;
         z = z - x;
         y = y + 1;
-        
+        y = y - 4;
 
         return y + x + z;
     }

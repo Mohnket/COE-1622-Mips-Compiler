@@ -49,6 +49,7 @@ public class ClassExtendVisitor implements Visitor {
                     m_DerivedError = true;
                     System.out.println(String.format("Redeclared base class variable %s line %d, character %d", baseVar.i.s, baseVar.m_Row, baseVar.m_Column));
                 }
+                
                 m_Scope.removeLast();
             }
             
@@ -63,6 +64,16 @@ public class ClassExtendVisitor implements Visitor {
                     m_SymbolTable.put(m_Scope.toArray(new String[0]), baseMethod);
                 }
                 m_Scope.removeLast();
+            }
+            
+            if(baseClass.m_MemberVariables.size() == 0)
+            {
+                for(int index = 0; index < baseClass.vl.size(); ++index)
+                {
+                    baseClass.m_MemberVariables.add(baseClass.vl.elementAt(index).i.s);
+                    m_SymbolTable.addMemberIndex(baseClass.vl.elementAt(index).i.s, index);
+                    derivedClass.m_MemberVariables.add(baseClass.m_MemberVariables.get(index));
+                }
             }
         }
         else if(inheritedClass instanceof ClassDeclExtends)
@@ -95,7 +106,21 @@ public class ClassExtendVisitor implements Visitor {
                 }
                 m_Scope.removeLast();
             }
+            
+            for(int index = 0; index < baseClass.m_MemberVariables.size(); ++index)
+            {
+                derivedClass.m_MemberVariables.add(baseClass.m_MemberVariables.get(index));
+            }
         }
+        
+        
+        
+        for(int index = 0; index < derivedClass.vl.size(); ++index)
+        {
+            derivedClass.m_MemberVariables.add(derivedClass.vl.elementAt(index).i.s);
+            m_SymbolTable.addMemberIndex(derivedClass.vl.elementAt(index).i.s, derivedClass.m_MemberVariables.size() - 1);
+        }
+        
         
         derivedClass.m_IsExtended = true;
         m_Scope.removeLast();

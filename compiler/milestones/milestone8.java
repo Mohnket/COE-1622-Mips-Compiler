@@ -2,8 +2,7 @@ class Test {
 
     public static void main(String[] args) {
         {
-            System.out.println(new Test2().factorial(12));
-            System.out.println(new Test2().test(5));
+            System.out.println(new Test2().factorial(5));
         }
     }
 }
@@ -12,6 +11,9 @@ class Test2 {
 
     public int factorial(int y) {
         int x;
+        int z;
+        
+        z = 2;
         
         if(y < 2)
         {
@@ -21,6 +23,9 @@ class Test2 {
         {
             x = this.factorial(y - 1);
         }
+        
+        z = this.test(y);
+        System.out.println(100);
         
         return x * y;
     }

@@ -1,134 +1,97 @@
 .text
 main:
-    ADDI $10, $zero, 12
     SUB $sp, $sp, 8
     SW $v0, 0($sp)
     SW $a0, 4($sp)
-    ADDI $a0, $zero, 0
-    JAL _new_object
-    ADD $11, $v0, $zero
-    LW $v0, 0($sp)
-    LW $a0, 4($sp)
-    ADD $sp, $sp, 8
-    
-    
-    SUB $sp, $sp, 12
-    SW $v0, 0($sp)
-    SW $5, 4($sp)
-    SW $4, 8($sp)
-    ADD $4, $zero, $11
-    ADD $5, $zero, $10
-    JAL Test2__factorial
-    ADD $16, $v0, $zero
-    LW $v0, 0($sp)
-    LW $5, 4($sp)
-    LW $4, 8($sp)
-    ADDI $sp, $sp, 12
-
-    ADD $a0, $zero, $16
-    JAL _system_out_println
-    ADDI $11, $zero, 5
-    SUB $sp, $sp, 8
-    SW $v0, 0($sp)
-    SW $a0, 4($sp)
-    ADDI $a0, $zero, 0
+    ADDI $a0, $zero, 12
     JAL _new_object
     ADD $10, $v0, $zero
     LW $v0, 0($sp)
     LW $a0, 4($sp)
     ADD $sp, $sp, 8
     
-    
-    SUB $sp, $sp, 12
+    SUB $sp, $sp, 8
     SW $v0, 0($sp)
-    SW $5, 4($sp)
-    SW $4, 8($sp)
+    SW $4, 4($sp)
     ADD $4, $zero, $10
-    ADD $5, $zero, $11
-    JAL Test2__test
+    JAL C__test
     ADD $16, $v0, $zero
     LW $v0, 0($sp)
-    LW $5, 4($sp)
-    LW $4, 8($sp)
-    ADDI $sp, $sp, 12
+    LW $4, 4($sp)
+    ADDI $sp, $sp, 8
 
     ADD $a0, $zero, $16
     JAL _system_out_println
     J _system_exit
 
 
-Test2__factorial:
-    SUB $sp, $sp, 8
-    SW $16, 0($sp)
-    SW $ra, 4($sp)
-    
-    ADDI $8, $zero, 2
-    SLT $8, $5, $8
-    BEQZ $8, __label_1
-
-__label_0:
-    ADDI $8, $zero, 1
-    
-    J __label_2
-
-__label_1:
-    
-    ADDI $8, $zero, 1
-    SUB $8, $5, $8
-    
-    
-    
+B__bTest:
     SUB $sp, $sp, 12
+    SW $16, 0($sp)
+    SW $17, 4($sp)
+    SW $ra, 8($sp)
+    ADDI $8, $zero, 3
+    ADD $16, $8, $zero
+    
+    
+    
+    SUB $sp, $sp, 8
     SW $v0, 0($sp)
-    SW $5, 4($sp)
-    SW $4, 8($sp)
+    SW $4, 4($sp)
     ADD $4, $zero, $4
-    ADD $5, $zero, $8
-    JAL Test2__factorial
-    ADD $16, $v0, $zero
+    JAL A__aTest
+    ADD $17, $v0, $zero
     LW $v0, 0($sp)
-    LW $5, 4($sp)
-    LW $4, 8($sp)
-    ADDI $sp, $sp, 12
+    LW $4, 4($sp)
+    ADDI $sp, $sp, 8
 
-    ADD $8, $16, $zero
-
-__label_2:
-    
-    
-    MUL $2, $8, $5
+    ADD $2, $16, $17
     ADD $v0, $2, $zero
     LW $16, 0($sp)
-    LW $ra, 4($sp)
-    ADD $sp, $sp, 8
+    LW $17, 4($sp)
+    LW $ra, 8($sp)
+    ADD $sp, $sp, 12
     JR $ra
 
 
-Test2__test:
+A__aTest:
     SUB $sp, $sp, 4
     SW $ra, 0($sp)
-
-__label_3:
-    ADDI $8, $zero, 0
+    ADDI $8, $zero, 2
+    ADD $2, $8, $zero
     
-    SLT $8, $8, $5
-    BEQZ $8, __label_5
-
-__label_4:
-    
-    ADD $a0, $zero, $5
-    JAL _system_out_println
-    
-    ADDI $8, $zero, 1
-    SUB $8, $5, $8
-    ADD $5, $8, $zero
-    J __label_3
-
-__label_5:
-    ADDI $2, $zero, 100
     ADD $v0, $2, $zero
     LW $ra, 0($sp)
     ADD $sp, $sp, 4
+    JR $ra
+
+
+C__test:
+    SUB $sp, $sp, 12
+    SW $16, 0($sp)
+    SW $17, 4($sp)
+    SW $ra, 8($sp)
+    ADDI $8, $zero, 4
+    ADD $16, $8, $zero
+    
+    
+    
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $4, 4($sp)
+    ADD $4, $zero, $4
+    JAL B__bTest
+    ADD $17, $v0, $zero
+    LW $v0, 0($sp)
+    LW $4, 4($sp)
+    ADDI $sp, $sp, 8
+
+    ADD $2, $16, $17
+    ADD $v0, $2, $zero
+    LW $16, 0($sp)
+    LW $17, 4($sp)
+    LW $ra, 8($sp)
+    ADD $sp, $sp, 12
     JR $ra
 
 

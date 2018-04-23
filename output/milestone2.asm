@@ -2,8 +2,8 @@
 main:
     ADDI $8, $zero, 5
     ADDI $9, $zero, 4
-    ADD $10, $8, $9
-    ADD $a0, $zero, $10
+    ADD $8, $8, $9
+    ADD $a0, $zero, $8
     JAL _system_out_println
     J _system_exit
 

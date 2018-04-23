@@ -1,6 +1,6 @@
 package compiler.ir;
 
-import compiler.generation.Generation;
+import compiler.generation.IrVisitor;
 
 public class Copy extends Quadruple
 {
@@ -14,8 +14,8 @@ public class Copy extends Quadruple
         return m_Result + " := " + m_Arg1;
     }
     
-    public String accept(Generation gen)
+    public String accept(IrVisitor visitor)
     {
-        return gen.visit(this);
+        return visitor.visit(this);
     }
 }

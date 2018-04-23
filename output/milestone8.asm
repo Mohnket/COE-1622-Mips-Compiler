@@ -1,6 +1,6 @@
 .text
 main:
-    ADDI $10, $zero, 12
+    ADDI $10, $zero, 5
     SUB $sp, $sp, 8
     SW $v0, 0($sp)
     SW $a0, 4($sp)
@@ -27,40 +27,16 @@ main:
 
     ADD $a0, $zero, $16
     JAL _system_out_println
-    ADDI $11, $zero, 5
-    SUB $sp, $sp, 8
-    SW $v0, 0($sp)
-    SW $a0, 4($sp)
-    ADDI $a0, $zero, 0
-    JAL _new_object
-    ADD $10, $v0, $zero
-    LW $v0, 0($sp)
-    LW $a0, 4($sp)
-    ADD $sp, $sp, 8
-    
-    
-    SUB $sp, $sp, 12
-    SW $v0, 0($sp)
-    SW $5, 4($sp)
-    SW $4, 8($sp)
-    ADD $4, $zero, $10
-    ADD $5, $zero, $11
-    JAL Test2__test
-    ADD $16, $v0, $zero
-    LW $v0, 0($sp)
-    LW $5, 4($sp)
-    LW $4, 8($sp)
-    ADDI $sp, $sp, 12
-
-    ADD $a0, $zero, $16
-    JAL _system_out_println
     J _system_exit
 
 
 Test2__factorial:
-    SUB $sp, $sp, 8
+    SUB $sp, $sp, 12
     SW $16, 0($sp)
-    SW $ra, 4($sp)
+    SW $17, 4($sp)
+    SW $ra, 8($sp)
+    ADDI $8, $zero, 2
+    
     
     ADDI $8, $zero, 2
     SLT $8, $5, $8
@@ -68,7 +44,7 @@ Test2__factorial:
 
 __label_0:
     ADDI $8, $zero, 1
-    
+    ADD $17, $8, $zero
     J __label_2
 
 __label_1:
@@ -91,16 +67,38 @@ __label_1:
     LW $4, 8($sp)
     ADDI $sp, $sp, 12
 
-    ADD $8, $16, $zero
+    ADD $17, $16, $zero
 
 __label_2:
     
     
-    MUL $2, $8, $5
+    
+    
+    SUB $sp, $sp, 12
+    SW $v0, 0($sp)
+    SW $5, 4($sp)
+    SW $4, 8($sp)
+    ADD $4, $zero, $4
+    ADD $5, $zero, $5
+    JAL Test2__test
+    ADD $16, $v0, $zero
+    LW $v0, 0($sp)
+    LW $5, 4($sp)
+    LW $4, 8($sp)
+    ADDI $sp, $sp, 12
+
+    ADD $8, $16, $zero
+    ADDI $8, $zero, 100
+    ADD $a0, $zero, $8
+    JAL _system_out_println
+    
+    
+    MUL $2, $17, $5
     ADD $v0, $2, $zero
     LW $16, 0($sp)
-    LW $ra, 4($sp)
-    ADD $sp, $sp, 8
+    LW $17, 4($sp)
+    LW $ra, 8($sp)
+    ADD $sp, $sp, 12
     JR $ra
 
 
