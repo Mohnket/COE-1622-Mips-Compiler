@@ -11,7 +11,7 @@ public class Length extends Quadruple
     
     public String toString()
     {
-        return m_Result + " := leangth " + m_Arg1; 
+        return m_Result + " := length " + m_Arg1; 
     }
     
     public String accept(IrVisitor visitor)

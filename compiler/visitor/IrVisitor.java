@@ -221,7 +221,7 @@ public class IrVisitor implements Visitor {
         n.e1.accept(this);
         String index = lastResult();
         n.e2.accept(this);
-        m_CurrentBlock.addQuad(new Copy(index, lastResult(), n.i.s));
+        m_CurrentBlock.addQuad(new Index(index, lastResult(), n.i.s, Index.STORE));
     }
 
     // Exp e1,e2;

@@ -4,6 +4,7 @@ source = $(wildcard ./compiler/syntaxtree/*.java)  \
 		 $(wildcard ./compiler/visitor/*.java) \
 		 $(wildcard ./compiler/symtable/*.java) \
 		 $(wildcard ./compiler/ir/*.java) \
+		 $(wildcard ./compiler/generation/*.java) \
 		 $(wildcard ./compiler/*.java)
          
 main: Parser.java Lexer.java

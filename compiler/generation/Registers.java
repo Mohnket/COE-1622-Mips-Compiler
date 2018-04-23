@@ -162,38 +162,81 @@ public class Registers
             HashSet<String> uses = new HashSet<String>();
             Quadruple currentQuad = straightCode.get(count);
             
-            // member exist in memory and do not interfere with anything
-            // call & new do not "use" their arguments, every other quad does
-            if(((currentQuad instanceof IrCall) == false) && ((currentQuad instanceof New) == false))
+            if(currentQuad instanceof Index)
             {
-                if((currentQuad.m_Arg1 != null) && (f_IsDigit.matcher(currentQuad.m_Arg1).matches() == false) && (currentQuad.m_Arg1.split("::").length != 2))
+                Index indexObject = (Index)currentQuad;
+                if(indexObject.m_Op == Index.STORE)
                 {
-                    uses.add(currentQuad.m_Arg1);
+                    if((f_IsDigit.matcher(currentQuad.m_Arg1).matches() == false) && (currentQuad.m_Arg1.split("::").length != 2))
+                    {
+                        uses.add(currentQuad.m_Arg1);
+                    }
+                    if((f_IsDigit.matcher(currentQuad.m_Arg2).matches() == false) && (currentQuad.m_Arg2.split("::").length != 2))
+                    {
+                        uses.add(currentQuad.m_Arg2);
+                    }
+                    if(currentQuad.m_Result.split("::").length != 2)
+                    {
+                        uses.add(currentQuad.m_Result);
+                    }
+                    
+                    def.add(null);
                 }
-                if((currentQuad.m_Arg2 != null) && (f_IsDigit.matcher(currentQuad.m_Arg2).matches() == false) && (currentQuad.m_Arg2.split("::").length != 2))
+                else
                 {
-                    uses.add(currentQuad.m_Arg2);
+                    if((f_IsDigit.matcher(currentQuad.m_Arg2).matches() == false) && (currentQuad.m_Arg2.split("::").length != 2))
+                    {
+                        uses.add(currentQuad.m_Arg2);
+                    }
+                    if(currentQuad.m_Arg1.split("::").length != 2)
+                    {
+                        uses.add(currentQuad.m_Arg1);
+                    }
+                    if(currentQuad.m_Result.split("::").length != 2)
+                    {
+                        def.add(currentQuad.m_Result);
+                    }
+                    else
+                    {
+                        def.add(null);
+                    }
                 }
             }
-            use.add(uses);
-            
-            // jumps do not define their results
-            if(((currentQuad instanceof ConditionalJump) == false) && ((currentQuad instanceof UnconditionalJump) == false))
+            else
             {
-                if((currentQuad.m_Result != null) && (currentQuad.m_Result.split("::").length != 2))
+                // member exist in memory and do not interfere with anything
+                // call & new do not "use" their arguments, every other quad does
+                if(((currentQuad instanceof IrCall) == false) && ((currentQuad instanceof New) == false))
                 {
-                    def.add(currentQuad.m_Result);
+                    if((currentQuad.m_Arg1 != null) && (f_IsDigit.matcher(currentQuad.m_Arg1).matches() == false) && (currentQuad.m_Arg1.split("::").length != 2))
+                    {
+                        uses.add(currentQuad.m_Arg1);
+                    }
+                    if((currentQuad.m_Arg2 != null) && (f_IsDigit.matcher(currentQuad.m_Arg2).matches() == false) && (currentQuad.m_Arg2.split("::").length != 2))
+                    {
+                        uses.add(currentQuad.m_Arg2);
+                    }
+                }
+                use.add(uses);
+                
+                // jumps do not define their results
+                if(((currentQuad instanceof ConditionalJump) == false) && ((currentQuad instanceof UnconditionalJump) == false))
+                {
+                    if((currentQuad.m_Result != null) && (currentQuad.m_Result.split("::").length != 2))
+                    {
+                        def.add(currentQuad.m_Result);
+                    }
+                    else
+                    {
+                        def.add(null);
+                    }
                 }
                 else
                 {
                     def.add(null);
                 }
             }
-            else
-            {
-                def.add(null);
-            }
-            
+
             liveIn.add(new HashSet<String>(uses));
         }
         

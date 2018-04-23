@@ -147,6 +147,16 @@ public class ClassExtendVisitor implements Visitor {
     // VarDeclList vl;
     // MethodDeclList ml;
     public void visit(ClassDeclSimple n) {
+        
+        if(n.m_MemberVariables.size() == 0)
+        {
+            for(int index = 0; index < n.vl.size(); ++index)
+            {
+                n.m_MemberVariables.add(n.vl.elementAt(index).i.s);
+                m_SymbolTable.addMemberIndex(n.vl.elementAt(index).i.s, index * 4);
+            }
+        }
+        
         n.i.accept(this);
         for ( int i = 0; i < n.vl.size(); i++ ) {
                 n.vl.elementAt(i).accept(this);

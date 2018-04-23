@@ -203,4 +203,3 @@ _new_array_exit:
 	sra $t0, $t0, 2
 	sw $t0, 0($v0)
 	jr $ra
-

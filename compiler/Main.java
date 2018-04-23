@@ -10,6 +10,8 @@ import compiler.visitor.ClassExtendVisitor;
 import compiler.symtable.SymbolTable;
 import compiler.generation.*;
 
+import java.io.PrintWriter;
+
 public class Main
 {
     public static void main(String... args) throws Exception
@@ -57,7 +59,11 @@ public class Main
         // System.err.println(irVisitor.m_IR.toString());
         
         Generation mipsGenerator = new Generation(irVisitor.m_IR, symbolTable);
+        
+        PrintWriter writer = new PrintWriter(args[1]);
+        writer.write(mipsGenerator.generate());
+        writer.close();
         // mipsGenerator.generate();
-        System.out.println(mipsGenerator.generate());
+        // System.out.println(mipsGenerator.generate());
     }
 }

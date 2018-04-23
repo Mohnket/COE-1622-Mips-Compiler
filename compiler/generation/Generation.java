@@ -170,6 +170,7 @@ public class Generation implements IrVisitor
         String spillTo = null;
         String spillFrom = null;
         
+        // System.err.println("to: " + copy.m_Result);
         if(to.charAt(0) != '$')
         {
             spillTo = to;
@@ -554,17 +555,261 @@ public class Generation implements IrVisitor
     
     public String visit(Length length)
     {
-        return "";
+        StringBuilder builder = new StringBuilder();
+        
+        String to = m_AllocatedRegisters.get(length.m_Result);
+        String from = m_AllocatedRegisters.get(length.m_Arg1);
+        
+        String spillTo = null;
+        String spillFrom = null;
+        
+        if(to.charAt(0) != '$')
+        {
+            spillTo = to;
+            to = "$t8";
+        }
+        
+        if(from.charAt(0) != '$')
+        {
+            spillFrom = from;
+            from = "$t9";
+            if(length.m_Arg1.split("::").length != 2)
+            {
+                builder.append("LW $t9, ").append(spillFrom).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW $t9, ").append(spillFrom).append("($a0)\n    ");
+            }
+        }
+        
+        builder.append("LW ").append(to).append(", 0(").append(from).append(")");
+        
+        if(spillTo != null)
+        {
+            if(length.m_Result.split("::").length != 2)
+            {
+                builder.append("\n    SW $t8, ").append(spillTo).append("($sp)");
+            }
+            else
+            {
+                builder.append("\n    SW $t8, ").append(spillTo).append("($a0)");
+            }
+        }
+        
+        return builder.toString();
     }
     
     public String visit(IrNewArray newArray)
     {
-        return "";
+        StringBuilder builder = new StringBuilder();
+        
+        String dest = m_AllocatedRegisters.get(newArray.m_Result);
+        String size = m_AllocatedRegisters.get(newArray.m_Arg1);
+        
+        String spillSize = null;
+        
+        // literal
+        if(size == null)
+        {
+            size = newArray.m_Arg1;
+            builder.append("ADDI $t8, $zero, ").append(size).append("\n    ");
+            size = "$t8";
+        }
+        else if(size.charAt(0) != '$')
+        {
+            spillSize = size;
+            size = "$t8";
+            if(newArray.m_Arg1.split("::").length != 2)
+            {
+                builder.append("LW $t8, ").append(spillSize).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW $t8, ").append(spillSize).append("($a0)\n    ");
+            }
+        }
+        
+        builder.append("SUB $sp, $sp, 8\n");
+        builder.append("    SW $v0, 0($sp)\n");
+        builder.append("    SW $a0, 4($sp)\n");
+        builder.append("    SLL ").append(size).append(", ").append(size).append(", 2\n");
+        builder.append("    ADD $a0, $zero, ").append(size).append("\n");
+        builder.append("    JAL _new_array\n");
+        
+        if(dest.charAt(0) != '$')
+        {
+            if(newArray.m_Result.split("::").length != 2)
+            {
+                builder.append("    SW $v0, ").append(dest).append("($sp)\n");
+            }
+            else
+            {
+                builder.append("    SW $v0, ").append(dest).append("($a0)\n");
+            }
+        }
+        else
+        {
+            builder.append("    ADD ").append(dest).append(", $v0, $zero\n");
+        }
+        
+        builder.append("    LW $v0, 0($sp)\n");
+        builder.append("    LW $a0, 4($sp)\n");
+        builder.append("    ADD $sp, $sp, 8");
+        
+        return builder.toString();
     }
     
     public String visit(Index index)
     {
-        return "";
+        if(index.m_Op == Index.STORE)
+        {
+            return indexStore(index);
+        }
+        else
+        {
+            return indexLoad(index);
+        }
+    }
+    
+    public String indexStore(Index index)
+    {
+        StringBuilder builder = new StringBuilder();
+        
+        String array = m_AllocatedRegisters.get(index.m_Result);
+        String offset = m_AllocatedRegisters.get(index.m_Arg1);
+        String value = m_AllocatedRegisters.get(index.m_Arg2);
+        
+        String spillArray = null;
+        String spillOffset = null;
+        String spillValue = null;
+        
+        if(array.charAt(0) != '$')
+        {
+            spillArray = array;
+            array = "$t8";
+            if(index.m_Result.split("::").length != 2)
+            {
+                builder.append("LW    $t8, ").append(spillArray).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW    $t8, ").append(spillArray).append("($a0)\n    ");
+            }
+        }
+        
+        if(offset == null)
+        {
+            offset = Integer.valueOf(Integer.decode(index.m_Arg1) * 4).toString();
+        }
+        else if(offset.charAt(0) != '$')
+        {
+            spillOffset = offset;
+            offset = "$t9";
+            if(index.m_Arg1.split("::").length != 2)
+            {
+                builder.append("LW    $t9, ").append(spillOffset).append("($sp)\n");
+                builder.append("    SLL $t9, $t9, 2\n    ");
+            }
+            else
+            {
+                builder.append("LW    $t9, ").append(spillOffset).append("($a0)\n    ");
+                builder.append("    SLL $t9, $t9, 2\n    ");
+            }
+        }
+        
+        builder.append("ADD $t8, ").append(array).append(", ").append(offset).append("\n");
+        
+        if(value == null)
+        {
+            value = "$t9";
+            builder.append("    ADDI $t9, $zero, ").append(index.m_Arg2).append("\n");
+        }
+        else if(value.charAt(0) != '$')
+        {
+            spillValue = value;
+            value = "$t9";
+            if(index.m_Arg2.split("::").length != 2)
+            {
+                builder.append("    LW    $t9, ").append(spillValue).append("($sp)\n");
+            }
+            else
+            {
+                builder.append("    LW    $t9, ").append(spillValue).append("($a0)\n");
+            }
+        }
+        
+        builder.append("    SW ").append(value).append(", 0($t8)");
+        
+        return builder.toString();
+    }
+    
+    public String indexLoad(Index index)
+    {
+        StringBuilder builder = new StringBuilder();
+        
+        String array = m_AllocatedRegisters.get(index.m_Arg1);
+        String offset = m_AllocatedRegisters.get(index.m_Arg2);
+        String dest = m_AllocatedRegisters.get(index.m_Result);
+        
+        String spillArray = null;
+        String spillOffset = null;
+        String spillDest = null;
+        
+        if(array.charAt(0) != '$')
+        {
+            spillArray = array;
+            array = "$t8";
+            if(index.m_Arg1.split("::").length != 2)
+            {
+                builder.append("LW    $t8, ").append(spillArray).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW    $t8, ").append(spillArray).append("($a0)\n    ");
+            }
+        }
+        
+        if(offset == null)
+        {
+            offset = index.m_Arg1;
+        }
+        else if(offset.charAt(0) != '$')
+        {
+            spillOffset = offset;
+            offset = "$t9";
+            if(index.m_Arg2.split("::").length != 2)
+            {
+                builder.append("LW    $t9, ").append(spillOffset).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW    $t9, ").append(spillOffset).append("($a0)\n    ");
+            }
+        }
+        
+        builder.append("ADD $t8, ").append(array).append(", ").append(offset).append("\n");
+        
+        if(dest.charAt(0) != '$')
+        {
+            spillDest = dest;
+            dest = "$t8";
+        }
+        
+        builder.append("    LW ").append(dest).append(", 0($t8)");
+        if(spillDest != null)
+        {
+            if(index.m_Result.split("::").length != 2)
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            }
+            else
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($a0)");
+            }
+        }
+        
+        return builder.toString();
     }
     
     private LinkedList<String> m_SavedStack;

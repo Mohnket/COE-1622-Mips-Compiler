@@ -44,7 +44,128 @@ main:
 
     ADD $a0, $zero, $16
     JAL _system_out_println
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $a0, 4($sp)
+    ADDI $a0, $zero, 4
+    JAL _new_object
+    ADD $10, $v0, $zero
+    LW $v0, 0($sp)
+    LW $a0, 4($sp)
+    ADD $sp, $sp, 8
+    
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $4, 4($sp)
+    ADD $4, $zero, $10
+    JAL Array__copy
+    ADD $16, $v0, $zero
+    LW $v0, 0($sp)
+    LW $4, 4($sp)
+    ADDI $sp, $sp, 8
+
+    ADD $a0, $zero, $16
+    JAL _system_out_println
     J _system_exit
+
+
+Array__copy:
+    SUB $sp, $sp, 4
+    SW $ra, 0($sp)
+    ADDI $8, $zero, 5
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $a0, 4($sp)
+    SLL $8, $8, 2
+    ADD $a0, $zero, $8
+    JAL _new_array
+    ADD $10, $v0, $zero
+    LW $v0, 0($sp)
+    LW $a0, 4($sp)
+    ADD $sp, $sp, 8
+    ADD $t8, $10, $zero
+    SW $t8, 0($a0)
+    ADDI $8, $zero, 5
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $a0, 4($sp)
+    SLL $8, $8, 2
+    ADD $a0, $zero, $8
+    JAL _new_array
+    ADD $10, $v0, $zero
+    LW $v0, 0($sp)
+    LW $a0, 4($sp)
+    ADD $sp, $sp, 8
+    
+    ADDI $9, $zero, 0
+    ADDI $8, $zero, 1
+    LW    $t8, 0($a0)
+    ADD $t8, $t8, $9
+    SW $8, 0($t8)
+    ADDI $8, $zero, 1
+    ADDI $9, $zero, 1
+    LW    $t8, 0($a0)
+    ADD $t8, $t8, $8
+    SW $9, 0($t8)
+    ADDI $8, $zero, 2
+    ADDI $9, $zero, 1
+    LW    $t8, 0($a0)
+    ADD $t8, $t8, $8
+    SW $9, 0($t8)
+    ADDI $8, $zero, 3
+    ADDI $9, $zero, 1
+    LW    $t8, 0($a0)
+    ADD $t8, $t8, $8
+    SW $9, 0($t8)
+    ADDI $8, $zero, 4
+    ADDI $9, $zero, 1
+    LW    $t8, 0($a0)
+    ADD $t8, $t8, $8
+    SW $9, 0($t8)
+    ADDI $8, $zero, 0
+    ADDI $9, $zero, 1
+    ADD $t8, $10, $8
+    SW $9, 0($t8)
+    ADDI $8, $zero, 0
+    
+
+_label_0:
+    
+    
+    LW $9, 0($10)
+    SLT $9, $8, $9
+    BEQZ $9, _label_2
+
+_label_1:
+    LW $t8, 0($a0)
+    ADD $t8, $t8, $zero
+    SW $t8, 0($a0)
+    
+    LW    $t8, 0($a0)
+    ADD $t8, $t8, $8
+    LW $9, 0($t8)
+    ADD $2, $9, $zero
+    
+    
+    ADD $t8, $10, $8
+    SW $2, 0($t8)
+    
+    ADDI $9, $zero, 1
+    ADD $8, $8, $9
+    
+    J _label_0
+
+_label_2:
+    
+    ADDI $8, $zero, 4
+    ADD $t8, $10, $8
+    LW $8, 0($t8)
+    ADD $2, $8, $zero
+    
+    ADD $v0, $2, $zero
+    LW $ra, 0($sp)
+    ADD $sp, $sp, 4
+    JR $ra
 
 
 C__test:
@@ -229,4 +350,3 @@ _new_array_exit:
 	sra $t0, $t0, 2
 	sw $t0, 0($v0)
 	jr $ra
-
