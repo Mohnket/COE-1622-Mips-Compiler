@@ -1,12 +1,12 @@
 .text
 main:
-    ADDI $10, $zero, 9
+    ADDI $11, $zero, 9
     SUB $sp, $sp, 8
     SW $v0, 0($sp)
     SW $a0, 4($sp)
     ADDI $a0, $zero, 0
     JAL _new_object
-    ADD $11, $v0, $zero
+    ADD $10, $v0, $zero
     LW $v0, 0($sp)
     LW $a0, 4($sp)
     ADD $sp, $sp, 8
@@ -16,8 +16,8 @@ main:
     SW $v0, 0($sp)
     SW $5, 4($sp)
     SW $4, 8($sp)
-    ADD $4, $zero, $11
-    ADD $5, $zero, $10
+    ADD $4, $zero, $10
+    ADD $5, $zero, $11
     JAL Test2__Start
     ADD $16, $v0, $zero
     LW $v0, 0($sp)

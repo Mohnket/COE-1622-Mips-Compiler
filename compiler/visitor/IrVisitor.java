@@ -16,8 +16,8 @@ public class IrVisitor implements Visitor {
     
     private BasicBlock m_CurrentBlock;
 
-    private static final String LABEL = "__label_";
-    private static final String VAR = "__var_";
+    private static final String LABEL = "_label_";
+    private static final String VAR = "_var_";
     private int labelGen;
     private int varGen;
     

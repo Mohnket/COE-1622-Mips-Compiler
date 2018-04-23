@@ -1,12 +1,12 @@
 .text
 main:
-    ADDI $10, $zero, 0
+    ADDI $11, $zero, 0
     SUB $sp, $sp, 8
     SW $v0, 0($sp)
     SW $a0, 4($sp)
     ADDI $a0, $zero, 0
     JAL _new_object
-    ADD $11, $v0, $zero
+    ADD $10, $v0, $zero
     LW $v0, 0($sp)
     LW $a0, 4($sp)
     ADD $sp, $sp, 8
@@ -16,8 +16,8 @@ main:
     SW $v0, 0($sp)
     SW $5, 4($sp)
     SW $4, 8($sp)
-    ADD $4, $zero, $11
-    ADD $5, $zero, $10
+    ADD $4, $zero, $10
+    ADD $5, $zero, $11
     JAL Test2__Start
     ADD $16, $v0, $zero
     LW $v0, 0($sp)
@@ -39,30 +39,30 @@ Test2__Start:
     XORI $8, $8, 1
     
     ADDI $8, $zero, 5
-    ADD $10, $8, $zero
+    ADD $9, $8, $zero
     
     
-    MUL $8, $10, $10
-    ADD $10, $8, $zero
+    MUL $8, $9, $9
+    ADD $9, $8, $zero
     ADDI $8, $zero, 12
-    ADD $9, $8, $zero
     
     
-    SUB $8, $9, $10
-    ADD $9, $8, $zero
     
-    ADDI $8, $zero, 1
-    ADD $8, $5, $8
-    ADD $5, $8, $zero
-    
-    ADDI $8, $zero, 4
-    SUB $8, $5, $8
-    ADD $5, $8, $zero
+    SUB $8, $8, $9
     
     
-    ADD $8, $5, $10
+    ADDI $10, $zero, 1
+    ADD $10, $5, $10
+    ADD $5, $10, $zero
     
-    ADD $2, $8, $9
+    ADDI $10, $zero, 4
+    SUB $10, $5, $10
+    ADD $5, $10, $zero
+    
+    
+    ADD $9, $5, $9
+    
+    ADD $2, $9, $8
     ADD $v0, $2, $zero
     LW $ra, 0($sp)
     ADD $sp, $sp, 4

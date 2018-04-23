@@ -3,7 +3,7 @@ main:
     SUB $sp, $sp, 8
     SW $v0, 0($sp)
     SW $a0, 4($sp)
-    ADDI $a0, $zero, 12
+    ADDI $a0, $zero, 16
     JAL _new_object
     ADD $10, $v0, $zero
     LW $v0, 0($sp)
@@ -22,17 +22,74 @@ main:
 
     ADD $a0, $zero, $16
     JAL _system_out_println
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $a0, 4($sp)
+    ADDI $a0, $zero, 16
+    JAL _new_object
+    ADD $10, $v0, $zero
+    LW $v0, 0($sp)
+    LW $a0, 4($sp)
+    ADD $sp, $sp, 8
+    
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $4, 4($sp)
+    ADD $4, $zero, $10
+    JAL C__anotherTest
+    ADD $16, $v0, $zero
+    LW $v0, 0($sp)
+    LW $4, 4($sp)
+    ADDI $sp, $sp, 8
+
+    ADD $a0, $zero, $16
+    JAL _system_out_println
     J _system_exit
 
 
-B__bTest:
-    SUB $sp, $sp, 12
-    SW $16, 0($sp)
-    SW $17, 4($sp)
-    SW $ra, 8($sp)
-    ADDI $8, $zero, 3
-    ADD $16, $8, $zero
+C__anotherTest:
+    SUB $sp, $sp, 4
+    SW $ra, 0($sp)
+    SUB $sp, $sp, 8
+    SW $v0, 0($sp)
+    SW $a0, 4($sp)
+    ADDI $a0, $zero, 8
+    JAL _new_object
+    ADD $10, $v0, $zero
+    LW $v0, 0($sp)
+    LW $a0, 4($sp)
+    ADD $sp, $sp, 8
+    ADD $t8, $10, $zero
+    SW $t8, 12($a0)
+    LW $t8, 12($a0)
+    ADD $t8, $t8, $zero
+    SW $t8, 12($a0)
     
+    SUB $sp, $sp, 4
+    SW $4, 0($sp)
+    LW $t8, 12($a0)
+    ADD $4, $zero, $t8
+    JAL B__bTest
+    ADD $2, $v0, $zero
+    LW $4, 0($sp)
+    ADDI $sp, $sp, 4
+
+    ADD $v0, $2, $zero
+    LW $ra, 0($sp)
+    ADD $sp, $sp, 4
+    JR $ra
+
+
+B__bTest:
+    SUB $sp, $sp, 8
+    SW $16, 0($sp)
+    SW $ra, 4($sp)
+    ADDI $8, $zero, 3
+    ADD $t8, $8, $zero
+    SW $t8, 4($a0)
+    LW $t8, 4($a0)
+    ADD $t8, $t8, $zero
+    SW $t8, 4($a0)
     
     
     SUB $sp, $sp, 8
@@ -40,17 +97,17 @@ B__bTest:
     SW $4, 4($sp)
     ADD $4, $zero, $4
     JAL A__aTest
-    ADD $17, $v0, $zero
+    ADD $16, $v0, $zero
     LW $v0, 0($sp)
     LW $4, 4($sp)
     ADDI $sp, $sp, 8
 
-    ADD $2, $16, $17
+    LW $t8, 4($a0)
+    ADD $2, $t8, $16
     ADD $v0, $2, $zero
     LW $16, 0($sp)
-    LW $17, 4($sp)
-    LW $ra, 8($sp)
-    ADD $sp, $sp, 12
+    LW $ra, 4($sp)
+    ADD $sp, $sp, 8
     JR $ra
 
 
@@ -58,22 +115,28 @@ A__aTest:
     SUB $sp, $sp, 4
     SW $ra, 0($sp)
     ADDI $8, $zero, 2
-    ADD $2, $8, $zero
-    
-    ADD $v0, $2, $zero
+    ADD $t8, $8, $zero
+    SW $t8, 0($a0)
+    LW $t8, 0($a0)
+    ADD $t8, $t8, $zero
+    SW $t8, 0($a0)
+    LW $t8, 0($a0)
+    ADD $v0, $t8, $zero
     LW $ra, 0($sp)
     ADD $sp, $sp, 4
     JR $ra
 
 
 C__test:
-    SUB $sp, $sp, 12
+    SUB $sp, $sp, 8
     SW $16, 0($sp)
-    SW $17, 4($sp)
-    SW $ra, 8($sp)
+    SW $ra, 4($sp)
     ADDI $8, $zero, 4
-    ADD $16, $8, $zero
-    
+    ADD $t8, $8, $zero
+    SW $t8, 8($a0)
+    LW $t8, 8($a0)
+    ADD $t8, $t8, $zero
+    SW $t8, 8($a0)
     
     
     SUB $sp, $sp, 8
@@ -81,17 +144,17 @@ C__test:
     SW $4, 4($sp)
     ADD $4, $zero, $4
     JAL B__bTest
-    ADD $17, $v0, $zero
+    ADD $16, $v0, $zero
     LW $v0, 0($sp)
     LW $4, 4($sp)
     ADDI $sp, $sp, 8
 
-    ADD $2, $16, $17
+    LW $t8, 8($a0)
+    ADD $2, $t8, $16
     ADD $v0, $2, $zero
     LW $16, 0($sp)
-    LW $17, 4($sp)
-    LW $ra, 8($sp)
-    ADD $sp, $sp, 12
+    LW $ra, 4($sp)
+    ADD $sp, $sp, 8
     JR $ra
 
 

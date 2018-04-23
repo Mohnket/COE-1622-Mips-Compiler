@@ -132,7 +132,7 @@ public class InterferenceGraph
             if(methodDecl.fl.size() <= 3)
             {
                 // for coloring, this, the return value, and other parameters to be precolored, and temps
-                m_ReservedCount += 2 + methodDecl.fl.size();
+                m_ReservedCount += 1 + methodDecl.fl.size();
                 
                 int paramNumber = PARAM_MIN + 1;
                 for(int index = 0; index < methodDecl.fl.size(); ++index)
@@ -150,7 +150,13 @@ public class InterferenceGraph
             // avoids the case where a parameter is the return value
             if(m_Colors.get(returnValue) == null)
             {
-                m_Colors.put(returnValue, RETURN);
+                // if the return value is in memory (doesn't interfere) leave it out of the graph
+                if(returnValue.split("__").length != 2)
+                {
+                    m_Colors.put(returnValue, RETURN);
+                    m_Graph.put(functionName, new ArrayList<String>());
+                    m_ReservedCount++;
+                }
             }
             
             m_Colors.put("this", PARAM_MIN);
@@ -167,6 +173,8 @@ public class InterferenceGraph
         // System.err.println();
         
         int currentSize = m_Graph.size();
+        // System.err.println("currentSize: " + currentSize);
+        // System.err.println("m_ReservedCount: " + m_ReservedCount);
         while(currentSize > m_ReservedCount)
         {
             boolean simplified = false;

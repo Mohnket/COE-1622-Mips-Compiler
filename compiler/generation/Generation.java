@@ -187,8 +187,15 @@ public class Generation implements IrVisitor
             {
                 spillFrom = from;
                 from = "$t8";
-                builder.append("LW $t8, ").append(spillFrom).append("($sp)\n    ");
-                
+                if(copy.m_Arg1.split("__").length != 2)
+                {
+                    builder.append("LW $t8, ").append(spillFrom).append("($sp)\n    ");
+                }
+                else
+                {
+                    // member variables are always attatched to 'this' in register $a0
+                    builder.append("LW $t8, ").append(spillFrom).append("($a0)\n    ");
+                }
             }
             else if(to.equals(from))
             {
@@ -200,7 +207,14 @@ public class Generation implements IrVisitor
         
         if(spillTo != null)
         {
-            builder.append("\n    SW $t8, ").append(spillTo).append("($sp)");
+            if(copy.m_Result.split("__").length != 2)
+            {
+                builder.append("\n    SW $t8, ").append(spillTo).append("($sp)");
+            }
+            else
+            {
+                builder.append("\n    SW $t8, ").append(spillTo).append("($a0)");
+            }
         }
         
         return builder.toString();
@@ -225,7 +239,14 @@ public class Generation implements IrVisitor
             {
                 spillPrint = print;
                 print = "$t8";
-                builder.append("LW $t8, ").append(spillPrint).append("($sp)\n    ");
+                if(irPrint.m_Arg1.split("__").length != 2)
+                {
+                    builder.append("LW $t8, ").append(spillPrint).append("($sp)\n    ");
+                }
+                else
+                {
+                    builder.append("LW $t8, ").append(spillPrint).append("($a0)\n    ");
+                }
             }
             
             builder.append("ADD $a0, $zero, ").append(print).append("\n");
@@ -290,13 +311,27 @@ public class Generation implements IrVisitor
             {
                 spillLeft = left;
                 left = "$t8";
-                builder.append("LW $t8, ").append(spillLeft).append("($sp)\n    ");
+                if(binOp.m_Arg1.split("__").length != 2)
+                {
+                    builder.append("LW $t8, ").append(spillLeft).append("($sp)\n    ");
+                }
+                else
+                {
+                    builder.append("LW $t8, ").append(spillLeft).append("($a0)\n    ");
+                }
             }
             if(right.charAt(0) != '$')
             {
                 spillRight = right;
                 right = "$t9";
-                builder.append("LW $t9, ").append(spillRight).append("($sp)\n    ");
+                if(binOp.m_Arg2.split("__").length != 2)
+                {
+                    builder.append("LW $t9, ").append(spillRight).append("($sp)\n    ");
+                }
+                else
+                {
+                    builder.append("LW $t9, ").append(spillRight).append("($a0)\n    ");
+                }
             }
             
             builder.append(op).append(dest).append(", ").append(left).append(", ").append(right);
@@ -304,7 +339,14 @@ public class Generation implements IrVisitor
         
         if(spillDest != null)
         {
-            builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            if(binOp.m_Result.split("__").length != 2)
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            }
+            else
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($a0)");
+            }
         }
     
         return builder.toString();
@@ -326,7 +368,14 @@ public class Generation implements IrVisitor
         
         if(dest.charAt(0) != '$')
         {
-            builder.append("    SW $v0, ").append(dest).append("($sp)\n");
+            if(newObject.m_Result.split("__").length != 2)
+            {
+                builder.append("    SW $v0, ").append(dest).append("($sp)\n");
+            }
+            else
+            {
+                builder.append("    SW $v0, ").append(dest).append("($a0)\n");
+            }
         }
         else
         {
@@ -373,7 +422,14 @@ public class Generation implements IrVisitor
         builder.append(restoreAcrossCall());
         if(spillDest != null)
         {
-            builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            if(call.m_Result.split("__").length != 2)
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            }
+            else
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($a0)");
+            }
         }
         return builder.toString();
     }
@@ -396,7 +452,14 @@ public class Generation implements IrVisitor
             {
                 spillValue = value;
                 value = "$t8";
-                builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
+                if(returnIr.m_Arg1.split("__").length != 2)
+                {
+                    builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
+                }
+                else
+                {
+                    builder.append("LW $t8, ").append(spillValue).append("($a0)\n    ");
+                }
             }
             
             builder.append("ADD $v0, ").append(value).append(", $zero").append("\n");
@@ -427,14 +490,28 @@ public class Generation implements IrVisitor
         {
             spillValue = value;
             value = "$t8";
-            builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
+            if(op.m_Arg1.split("__").length != 2)
+            {
+                builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW $t8, ").append(spillValue).append("($a0)\n    ");
+            }
         }
         
         builder.append("XORI ").append(destination).append(", ").append(value).append(", 1");
         
         if(spillDest != null)
         {
-            builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            if(op.m_Result.split("__").length != 2)
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($sp)");
+            }
+            else
+            {
+                builder.append("\n    SW $t8, ").append(spillDest).append("($a0)");
+            }
         }
         
         return builder.toString();
@@ -460,7 +537,14 @@ public class Generation implements IrVisitor
         {
             spillValue = value;
             value = "$t8";
-            builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
+            if(jump.m_Arg1.split("__").length != 2)
+            {
+                builder.append("LW $t8, ").append(spillValue).append("($sp)\n    ");
+            }
+            else
+            {
+                builder.append("LW $t8, ").append(spillValue).append("($a0)\n    ");
+            }
         }
         
         builder.append("BEQZ ").append(value).append(", ").append(jump.m_Result);
@@ -526,7 +610,14 @@ public class Generation implements IrVisitor
                 {
                     spillRegister = register;
                     register = "$t8";
-                    builder.append("    LW $t8, ").append((Integer.decode(spillRegister) + additionalOffset)).append("($sp)\n");
+                    if(parameter.split("__").length != 2)
+                    {
+                        builder.append("    LW $t8, ").append((Integer.decode(spillRegister) + additionalOffset)).append("($sp)\n");
+                    }
+                    else
+                    {
+                        builder.append("    LW $t8, ").append(spillRegister).append("($a0)\n");
+                    }
                 }
                 builder.append("    ADD $").append(m_ParamNumber++).append(", $zero, ").append(register).append("\n");
             }

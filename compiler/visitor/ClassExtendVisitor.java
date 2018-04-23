@@ -71,7 +71,7 @@ public class ClassExtendVisitor implements Visitor {
                 for(int index = 0; index < baseClass.vl.size(); ++index)
                 {
                     baseClass.m_MemberVariables.add(baseClass.vl.elementAt(index).i.s);
-                    m_SymbolTable.addMemberIndex(baseClass.vl.elementAt(index).i.s, index);
+                    m_SymbolTable.addMemberIndex(baseClass.vl.elementAt(index).i.s, index * 4);
                     derivedClass.m_MemberVariables.add(baseClass.m_MemberVariables.get(index));
                 }
             }
@@ -118,7 +118,7 @@ public class ClassExtendVisitor implements Visitor {
         for(int index = 0; index < derivedClass.vl.size(); ++index)
         {
             derivedClass.m_MemberVariables.add(derivedClass.vl.elementAt(index).i.s);
-            m_SymbolTable.addMemberIndex(derivedClass.vl.elementAt(index).i.s, derivedClass.m_MemberVariables.size() - 1);
+            m_SymbolTable.addMemberIndex(derivedClass.vl.elementAt(index).i.s, (derivedClass.m_MemberVariables.size() - 1) * 4);
         }
         
         
